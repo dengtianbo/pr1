@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.situ.dao.AddressDAO">
+	<!-- 配置了一个sql片段 -->
+	<sql id="AddressColumns">
+		id,user_id,name,address,details_address,phone,email
+	</sql>
+
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="com.situ.model.Address" id="AddressMap">
+		<id property="id" column="id" />
+		<result property="user_id" column="user_id" />
+		<result property="name" column="name" />
+		<result property="address" column="address" />
+		<result property="details_address" column="details_address" />
+		<result property="phone" column="phone" />
+		<result property="email" column="email" />
+	</resultMap>
+
+	<!-- 通过user_id查询地址 -->
+	<select id="findByUserId" resultMap="AddressMap">
+		select
+		<include refid="AddressColumns" />
+		from address
+		<where>
+			user_id=#{user_id}
+		</where>
+	</select>
+	
+	<!-- 通过id查询地址 -->
+	<select id="findById" resultType="com.situ.model.Address" parameterType="java.lang.Integer">
+		select
+		<include refid="AddressColumns" />
+		from address
+		<where>
+		id=#{id}
+		</where>
+	</select>
+	
+
+	<!-- （添加地址） -->
+	<insert id="save" parameterType="com.situ.model.Address">
+		insert into
+		`address`(user_id,name,address,details_address,phone,email) value(
+		#{user_id},
+		#{name},
+		#{address},
+		#{details_address},
+		#{phone},
+		#{email}
+		)
+	</insert>
+
+	<delete id="deleteByid" parameterType="java.lang.Integer">
+		delete from `address`
+		<where>
+			id =#{id}
+		</where>
+	</delete>
+	
+	<update id="update" parameterType="com.situ.model.Address">
+		update address
+		<set>
+			name=#{name},
+			address=#{address},
+			details_address=#{details_address},
+			email=#{email},
+			phone=#{phone}
+		
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	
+	</update>
+
+
+
+
+
+</mapper>

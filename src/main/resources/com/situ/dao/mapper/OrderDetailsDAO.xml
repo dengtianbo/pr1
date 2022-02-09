@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.situ.dao.OrderDetailsDAO">
+	<!-- 配置了一个sql片段 -->
+	<sql id="OrderDetailsColumns">
+		id,uid,goods_id,number
+	</sql>
+
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="com.situ.model.OrderDetails" id="OrderDetailsMap">
+		<id property="id" column="id" />
+		<result property="uid" column="uid" />
+		<result property="goods_id" column="goods_id" />
+		<result property="number" column="number" />
+		<association property="goods" column="goods_id" select="com.situ.dao.GoodsDAO.findById" /> 
+		
+	</resultMap>
+
+	<select id="findByUid" resultMap="OrderDetailsMap" parameterType="java.lang.String">
+		select 
+		<include refid="OrderDetailsColumns"/>
+		from `order_details`
+		<where>
+		uid=#{uid}
+		
+		</where>
+	
+	</select>
+
+
+	<!-- （添加订单） -->
+	<insert id="save" parameterType="com.situ.model.OrderDetails">
+		insert into
+		`order_details`(uid,goods_id,number) value(
+		
+		#{uid},
+		#{goods_id},
+		#{number}
+		
+		)
+	</insert>
+
+	<delete id="deleteByUid" parameterType="java.lang.String">
+		delete from `order_details`
+		<where>
+			uid =#{uid}
+		</where>
+	</delete>
+
+	
+
+
+
+</mapper>

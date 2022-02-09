@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.situ.dao.PictureDAO">
+	<!-- 配置了一个sql片段 -->
+	<sql id="PictureDAOColumns">
+		id,pid,name
+	</sql>
+	
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="com.situ.model.Picture" id="PictureMap">
+		<id property="id" column="id" />
+		<result property="pid" column="pid" />
+		<result property="name" column="name" />
+	</resultMap>
+	
+	
+	<!--  通过pid查询下一级菜单-->
+	<select id="findByPid" resultMap="PictureMap" parameterType="java.lang.Integer">
+	 	select 
+	 	<include refid="PictureDAOColumns" />
+	 	from picture
+	 	<where>
+	 	  pid=#{pid}
+	 	</where>
+	</select>
+	
+	
+
+	
+	
+	
+</mapper>

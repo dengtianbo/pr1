@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.situ.dao.LoginDAO">
+	<!-- 配置了一个sql片段 -->
+	<sql id="UserLoginColumns">
+		id,username,password,phone,email,address,portrait,nickname
+	</sql>
+	<sql id="AdminLoginColumns">
+		id,username,password,phone,email,qq
+	</sql>
+	
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="com.situ.model.Admin" id="AdminLoginMap">
+		<id property="id" column="id" />
+		<result property="username" column="username" />
+		<result property="password" column="password" />
+		<result property="email" column="email" />
+		<result property="phone" column="phone" />
+		<result property="qq" column="qq" />
+		
+	</resultMap>
+	
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="com.situ.model.User" id="UserLoginMap">
+		
+		<id property="id" column="id" />
+		<result property="username" column="username" />
+		<result property="password" column="password" />
+		<result property="email" column="email" />
+		<result property="phone" column="phone" />
+		<result property="address" column="address" />
+		<result property="portrait" column="portrait" />
+		<result property="nickname" column="nickname" />
+		
+		
+	</resultMap>
+	
+	<!--  通过username查询admin-->
+	<select id="findAdmin" resultMap="AdminLoginMap">
+	 	select 
+	 	<include refid="AdminLoginColumns" />
+	 	from admin
+	 	where username=#{username};
+	</select>
+	
+
+	
+	<!--  通过username查询user -->
+	<select id="findUser" resultMap="UserLoginMap">
+	 	select 
+	 	<include refid="UserLoginColumns" />
+	 	from user
+	 	where username=#{username};
+	</select>
+	
+	<!-- 注册（添加user） -->
+	<insert id="saveUser" parameterType="com.situ.model.User" >
+	insert into user(username,password,nickname,email,phone) value(
+	#{username},
+	#{password},
+	#{nickname},
+	#{email},
+	#{phone}
+	)
+	
+	</insert>
+	
+	
+	
+	
+	
+	
+	
+</mapper>

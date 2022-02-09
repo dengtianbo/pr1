@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.situ.dao.OrderDAO">
+	<!-- 配置了一个sql片段 -->
+	<sql id="OrderColumns">
+		id,user_id,uid,time,price,order_status
+	</sql>
+
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="com.situ.model.Order" id="OrderMap">
+		<id property="id" column="id" />
+		<result property="user_id" column="user_id" />
+		<result property="uid" column="uid" />
+		<result property="time" column="time" />
+		<result property="price" column="price" />
+		<result property="order_status" column="order_status" />
+		<association property="user" column="user_id"
+			select="com.situ.dao.UserListDAO.findById" /> 
+			
+	</resultMap>
+
+	<!--查询所有订单 -->
+	<select id="findAll" resultMap="OrderMap">
+		select
+		<include refid="OrderColumns" />
+		from `order`
+		<where>
+			<if test="uid!=null and uid!=''">
+				<!-- 拼出%%的形式 -->
+				<bind name="uiddd" value="'%'+uid+'%'"/>
+				and uid like #{uiddd}
+			</if>
+		
+		</where>
+		
+	</select>
+
+	<!--通过uid查询order  -->
+	<select id="findByUid" resultMap="OrderMap"  parameterType="java.lang.String" >
+	select
+	<include refid="OrderColumns" />
+		from `order`
+	<where>
+	uid=#{uid}
+	</where>
+	
+	</select>
+
+
+	<!-- 通过user_id查询订单 -->
+	<select id="findByUserId" resultMap="OrderMap">
+		select
+		<include refid="OrderColumns" />
+		from `order`
+		<where>
+			user_id=#{user_id}
+		</where>
+	</select>
+
+	
+
+	<!-- （添加订单） -->
+	<insert id="save" parameterType="com.situ.model.Order">
+		insert into
+		`order`(user_id,uid,time,price,order_status) value(
+		#{user_id},
+		#{uid},
+		#{time},
+		#{price},
+		#{order_status}
+		
+		)
+	</insert>
+
+	<delete id="deleteByIds">
+		delete from `order`
+		<where>
+			id in
+			<foreach collection="ids" item="i" separator="," open="("
+				close=")">
+				#{i}
+			</foreach>
+		</where>
+	</delete>
+
+	<update id="updateSendout" parameterType="java.lang.String">
+		update  `order` 
+		<set>
+		order_status=3
+		</set>
+		
+		where uid=#{uid}
+	
+	</update>
+
+
+	<delete id="deleteByUid">
+		delete from `order` 
+		<where>
+			uid=#{uid}
+		</where>
+	
+	</delete>
+
+
+</mapper>

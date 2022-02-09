@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.situ.dao.AdminInfoDAO">
+	<!-- 配置了一个sql片段 -->
+	<sql id="AdminListColumns">
+		id,username,email,phone,qq
+	</sql>
+	
+	
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="com.situ.model.Admin" id="AdminListMap">
+		<id property="id" column="id" />
+		<result property="username" column="username" />
+		<result property="nickname" column="nickname" />
+		<result property="email" column="email" />
+		<result property="phone" column="phone" />
+		<result property="qq" column="qq" />
+		
+	</resultMap>
+	
+	
+	
+	<!--  查询的user -->
+	<select id="findAdminById" resultMap="AdminListMap">
+	 	select 
+	 	<include refid="AdminListColumns" />
+	 	from admin
+	 	<where>
+	 	id=#{id}
+	 	</where>
+	</select>
+	
+	
+	<!-- （添加user） -->
+	<insert id="saveAdmin" parameterType="com.situ.model.Admin" >
+	insert into admin(username,password,email,phone,qq) value(
+	#{username},
+	#{password},
+	#{email},
+	#{phone},
+	#{qq}
+	)
+	</insert>
+	
+	<!--修改user内容(不包含密码)  -->
+	<update id="editAdmin" parameterType="com.situ.model.Admin" >
+		update admin
+		<set>
+		username=#{username},
+		email=#{email},
+		phone=#{phone},
+		qq=#{qq}
+		</set>
+		<where>
+		id=#{id}
+		</where>
+	</update>
+	
+	<!-- 修改密码 -->
+	<update id="editPassword" parameterType="com.situ.model.Admin" >
+		update admin
+		<set>
+		password=#{password}
+		</set>
+		<where>
+		id=#{id}
+		</where>
+	</update>
+	
+	
+	
+	
+	<delete id="deleteByIds">
+		delete from admin
+		<where>
+			id in 
+			<foreach collection="ids" item="i" separator="," open="(" close=")">
+			 #{i}
+			</foreach>
+		</where>
+	</delete>
+	
+	
+	<!-- 删除user表中的一条（根据用户名） -->
+	<delete id="deleteAdmin" >
+		delete from admin
+		<where>
+			id=#{id}
+		</where>
+	</delete>
+	
+	
+	
+	
+	
+</mapper>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.situ.dao.GoodsDAO">
+	<!-- 配置了一个sql片段 -->
+	<sql id="GoodsColumns">
+		id,name,picture,price,pdid,classid,heat,ms
+	</sql>
+
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="com.situ.model.Goods" id="GoodsMap">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="picture" column="picture" />
+		<result property="price" column="price" />
+		<result property="pdid" column="pdid" />
+		<result property="classid" column="classid" />
+		<result property="heat" column="heat" />
+		<result property="ms" column="ms" />
+	</resultMap>
+
+
+	<!-- 查询满总所有goods -->
+	<select id="findAllGoods" resultMap="GoodsMap">
+		select
+		<include refid="GoodsColumns" />
+		from goods
+		<where>
+			<if test="id!=null and id!=''">
+				and id = #{id}
+			</if>
+
+			<if test="name!=null and name!=''">
+				<!-- 拼出%%的形式 -->
+				<bind name="likename" value="'%'+name+'%'" />
+				and name like #{likename}
+			</if>
+			<if test="price!=null and price!=''">
+				and price = #{price}
+			</if>
+			
+		</where>
+	</select>
+
+
+	<!-- 查询所有的goods个数 -->
+	<select id="findCount" resultType="java.lang.Integer">
+		select count(id)
+		from goods
+		<where>
+			<if test="id!=null and id!=''">
+				and id = #{id}
+			</if>
+
+			<if test="name!=null and name!=''">
+				<!-- 拼出%%的形式 -->
+				<bind name="likename" value="'%'+name+'%'" />
+				and name like #{likename}
+			</if>
+
+		</where>
+	</select>
+
+	<!-- 通过id查询goods -->
+	<select id="findById" resultType="com.situ.model.Goods">
+		select
+		<include refid="GoodsColumns" />
+		from goods
+		<where>
+			id=#{id}
+		</where>
+	</select>
+
+	<!-- 通过name查询goods -->
+	<select id="findGoodsname" resultMap="GoodsMap">
+		select
+		<include refid="GoodsColumns" />
+		from goods
+		where name=#{name};
+	</select>
+
+
+	<!-- （添加goods） -->
+	<insert id="save" parameterType="com.situ.model.Goods">
+		insert into
+		goods(name,picture,price,pdid,classid,heat,ms) value(
+		#{name},
+		#{picture},
+		#{price},
+		#{pdid},
+		#{classid},
+		#{heat},
+		#{ms}
+		)
+	</insert>
+
+	<!--修改user内容 -->
+	<update id="update" parameterType="com.situ.model.Goods">
+		update goods
+		<set>
+			name=#{name},
+			price=#{price},
+			pdid=#{pdid},
+			classid=#{classid},
+			heat=#{heat},
+			ms=#{ms},
+			<if test="picture!=null and picture!=''">
+				picture=#{picture}
+			</if>
+
+
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</update>
+
+	<delete id="deleteByIds">
+		delete from goods
+		<where>
+			id in
+			<foreach collection="ids" item="i" separator="," open="("
+				close=")">
+				#{i}
+			</foreach>
+		</where>
+	</delete>
+
+
+	<!-- 删除goods表中的一条（根据用户名） -->
+	<delete id="deleteGoods">
+		delete from goods
+		<where>
+			id=#{id}
+		</where>
+	</delete>
+
+
+
+
+
+</mapper>

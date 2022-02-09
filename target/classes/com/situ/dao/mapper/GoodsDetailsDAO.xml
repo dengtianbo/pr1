@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.situ.dao.GoodsDetailsDAO">
+	<!-- 配置了一个sql片段 -->
+	<sql id="GoodsDetailsDAOColumns">
+		id,goods_id,pid
+	</sql>
+	
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="com.situ.model.GoodsDetails" id="GoodsDetailsMap">
+		<id property="id" column="id" />
+		<result property="goods_id" column="goods_id" />
+		<result property="pid" column="pid" />
+		<collection property="pictures" column="pid" select="com.situ.dao.PictureDAO.findByPid"/>
+	</resultMap>
+	
+	
+	<!--  通过pid查询下一级菜单-->
+	<select id="findByGoodsId" resultMap="GoodsDetailsMap" parameterType="java.lang.Integer">
+	 	select 
+	 	<include refid="GoodsDetailsDAOColumns" />
+	 	from goods_details
+	 	<where>
+	 	  goods_id=#{goods_id}
+	 	</where>
+	</select>
+	
+	
+</mapper>

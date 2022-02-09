@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.situ.dao.BuyCarDAO">
+	<!-- 配置了一个sql片段 -->
+	<sql id="BuyCarColumns">
+		id,user_id,goods_id,number
+	</sql>
+
+	<!-- 配置查询结果集与对象之间的映射 -->
+	<resultMap type="com.situ.model.BuyCarInfo" id="BuyCarMap">
+		<id property="id" column="id" />
+		<result property="user_id" column="user_id" />
+		<result property="goods_id" column="goods_id" />
+		<result property="number" column="number" />
+		<association property="goods" column="goods_id"
+			select="com.situ.dao.GoodsDAO.findById" />
+	</resultMap>
+
+
+	<!-- 查询user_id对应的所有buyCarInfo -->
+	<select id="findAll" resultMap="BuyCarMap">
+		select
+		<include refid="BuyCarColumns" />
+		from buycar where user_id=#{id}
+
+	</select>
+	
+	<select id="findByGoodsid" resultMap="BuyCarMap">
+		select
+		<include refid="BuyCarColumns" />
+		from buycar where user_id=#{user_id} and goods_id=#{goods_id}
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteByIds">
+		delete from buycar
+		<where>
+			goods_id in
+			<foreach collection="ids" item="i" separator="," open="("
+				close=")">
+				#{i}
+			</foreach>
+		</where>
+	</delete>
+
+	<!--添加一条  -->
+	<insert id="save" parameterType="com.situ.model.BuyCarInfo">
+		insert into buycar(goods_id,user_id,number) value(
+		#{goods_id},
+		#{user_id},
+		#{number}
+		)
+	</insert>
+	
+	<update id="updateNumber"  parameterType="com.situ.model.BuyCarInfo">
+	update  buycar
+	<set>
+		number=number + #{number}
+	
+	</set>
+	<where>
+		goods_id=#{goods_id} and user_id=#{user_id}
+	
+	</where>
+	</update>
+
+
+</mapper>
